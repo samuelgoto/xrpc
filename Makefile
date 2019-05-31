@@ -1,10 +1,10 @@
 
 all:
 	protoc --cpp_out=. helloworld.proto
-	g++ main.cc helloworld.pb.cc -o main -lprotobuf -pthread
+	g++ helloworld.cc helloworld.pb.cc -o helloworld -lprotobuf -pthread
 
 run: all
-	./main
+	./helloworld
 
 clean:
-	-rm -f main helloworld.pb.cc helloworld.pb.h
+	-rm -f helloworld helloworld.pb.cc helloworld.pb.h
