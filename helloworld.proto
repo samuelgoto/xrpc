@@ -1,0 +1,16 @@
+syntax = "proto3";
+option cc_generic_services = true;
+
+package helloworld;
+
+message HelloWorldRequest {
+  string hello = 1;
+}
+
+message HelloWorldResponse {
+  string world = 2;
+}
+
+service HelloWorldService {
+  rpc Print(HelloWorldRequest) returns (HelloWorldResponse);
+}
