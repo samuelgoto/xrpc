@@ -7,6 +7,7 @@
 
 using namespace helloworld;
 
+// Basic implementation of the server.
 class HelloWorldServiceImpl : public HelloWorldService {
  public:
   void Print(google::protobuf::RpcController* controller,
@@ -18,6 +19,7 @@ class HelloWorldServiceImpl : public HelloWorldService {
   }
 };
 
+// Basic implementation of a FCM channel.
 class RpcChannel : public google::protobuf::RpcChannel {
   void CallMethod(const google::protobuf::MethodDescriptor * method,
                   google::protobuf::RpcController* controller,
@@ -73,17 +75,14 @@ void Done(const HelloWorldResponse* response) {
   std::cout << "Done: " << response->world() << std::endl;
 }
 
-// Main function:  Reads the entire address book from a file,
-//   adds one person based on user input, then writes it back out to the same
-//   file.
 int main(int argc, char* argv[]) {
-  // Verify that the version of the library that we linked against is
-  // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+  // Uses our custom channels.
   RpcChannel channel;
   RpcController controller;
 
+  // Creates the client stub.
   HelloWorldService_Stub service(&channel);
 
   HelloWorldRequest request;
@@ -91,14 +90,15 @@ int main(int argc, char* argv[]) {
 
   request.set_hello("foo bar");
 
-  google::protobuf::Closure* callback = google::protobuf::NewCallback(&Done, static_cast<const HelloWorldResponse*>(&response));
+  google::protobuf::Closure* callback = google::protobuf::NewCallback(
+      &Done, static_cast<const HelloWorldResponse*>(&response));
 
+  // Sends the RPC.
   service.Print(&controller,
                 &request,
                 &response,
                 callback);
 
-  // Optional:  Delete all global objects allocated by libprotobuf.
   google::protobuf::ShutdownProtobufLibrary();
 
   return 0;
